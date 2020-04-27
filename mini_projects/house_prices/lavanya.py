@@ -38,6 +38,8 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import RobustScaler
 from sklearn.decomposition import PCA
 
+from utils import utilities
+
 pandas.set_option('display.max_columns', None)
 
 # Ignore useless warnings
@@ -63,8 +65,8 @@ SUBMISSION_FILE_2 = '/Users/fpena/Datasets/house-prices/submission_regression2.c
 # Read in the dataset as a dataframe
 
 def load_data():
-    train = pandas.read_csv(TRAIN_FILE)
-    test = pandas.read_csv(TEST_FILE)
+    train = pandas.read_csv(TRAIN_FILE)[:60]
+    test = pandas.read_csv(TEST_FILE)[:60]
 
     return train, test
 
@@ -469,14 +471,20 @@ def prepare_submission(
 
 
 def full_cycle():
+
+    utilities.plant_seeds()
+
+    print("%s: Starting process" % (time.strftime("%Y/%m/%d-%H:%M:%S")))
     train, test = load_data()
     train = rescale_sale_price(train)
     train = remove_outliers(train)
     all_features, train_labels = split_features(train, test)
     all_features = normalize_numeric_features(all_features)
     X, X_test = create_x_sets(all_features, train_labels)
+    print("%s: Finished data preprocessing" % (time.strftime("%Y/%m/%d-%H:%M:%S")))
     ridge_model, svr_model, gbr_model, xgb_model, rf_model, stack_gen_model = train_models(X, train_labels)
-    prepare_submission(X_test, ridge_model, svr_model, gbr_model, xgb_model, rf_model, stack_gen_model)
+    print("%s: Finished training models" % (time.strftime("%Y/%m/%d-%H:%M:%S")))
+    # prepare_submission(X_test, ridge_model, svr_model, gbr_model, xgb_model, rf_model, stack_gen_model)
 
 
 # TODO: Plant random seeds
