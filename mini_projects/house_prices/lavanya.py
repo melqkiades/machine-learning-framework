@@ -457,13 +457,15 @@ def prepare_submission(
     q2 = submission['SalePrice'].quantile(0.99)
     submission['SalePrice'] = submission['SalePrice'].apply(lambda x: x if x > q1 else x*0.77)
     submission['SalePrice'] = submission['SalePrice'].apply(lambda x: x if x < q2 else x*1.1)
-    submission.to_csv("submission_regression1.csv", index=False)
+    submission.to_csv(SUBMISSION_FILE_1, index=False)
     # Score 0.11987
+    # Score 0.12058
 
     # Scale predictions
     submission['SalePrice'] *= 1.001619
-    submission.to_csv("submission_regression2.csv", index=False)
+    submission.to_csv(SUBMISSION_FILE_2, index=False)
     # Score 0.11979
+    # Score 0.12051
 
 
 def full_cycle():
